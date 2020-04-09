@@ -8,3 +8,7 @@
 **/*.egg-info
 **/*.pyc
 **/dist
+.pants.d
+dist
+.pids
+.pants.workdir.file_lock
