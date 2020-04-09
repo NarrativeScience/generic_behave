@@ -12,3 +12,5 @@
 dist
 .pids
 .pants.workdir.file_lock
+# PyCharm files
+**/.idea/
