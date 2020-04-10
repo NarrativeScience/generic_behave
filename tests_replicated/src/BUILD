@@ -1,4 +1,5 @@
 python_library(
+    name="lib",
     dependencies=[
         "3rdparty/python:ansicolor",
         "3rdparty/python:behave",
@@ -7,5 +8,11 @@ python_library(
         "test_utils/behave/src",
     ],
     sources=globs("ns_tests_replicated/**/*"),
-    tags={".", "code", "python"},
+    tags={"python", "tests", "tests-replicated"},
+)
+python_binary(
+    name="tests-replicated",
+    source="ns_tests_replicated/behave_cli.py",
+    dependencies=[":lib"],
+    tags={"python", "tests", "tests-replicated"},
 )
