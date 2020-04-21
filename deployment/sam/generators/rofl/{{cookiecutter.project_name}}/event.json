@@ -1,0 +1,9 @@
+{
+  "user_token": "some.JWT",
+  "app_id": "app1",
+  "narrative_id": "narrative2",
+  "story_params": {
+    "guidance": "good"
+  },
+  "email": "foo@bar.com"
+}

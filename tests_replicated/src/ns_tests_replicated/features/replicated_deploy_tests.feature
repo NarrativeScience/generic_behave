@@ -4,7 +4,7 @@ Feature: Tests for Replicated deployment
   Scenario: Validate the correct version is installed
     Given a version request is sent to the replicated test stack
     Then a 200 response is returned
-    And the viz-server version is "0.14.0"
+    And the viz-server version is "0.15.0"
 
   Scenario: Basic health check (story write)
     Given the test data is retrieved from S3

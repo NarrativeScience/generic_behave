@@ -1,0 +1,10 @@
+{
+  "generator": "python",
+  "version": 1,
+  "project_name": "{{ cookiecutter.project_name }}",
+  "requires_vpc": "{{ cookiecutter.requires_vpc }}",
+  "requires_dlq": "{{ cookiecutter.requires_dlq }}",
+  "requires_postgres": "{{ cookiecutter.requires_postgres }}",
+  "is_nested_stack": "{{ cookiecutter.is_nested_stack }}",
+  "is_cf_custom_resource": "{{ cookiecutter.is_cf_custom_resource }}"
+}

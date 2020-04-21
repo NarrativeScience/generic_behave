@@ -209,6 +209,4 @@ def log_after_all_complete() -> None:
 
 
 def setup_host(ctx: Context) -> None:
-    environment = ctx.config.userdata['environment']
-    if environment == "replicated":
-        ctx.gateway_base_url = "https://replicated-test.n-s.internal/"
+    ctx.gateway_base_url = ctx.config.userdata['environment']

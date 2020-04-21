@@ -1,0 +1,10 @@
+{
+  "name": "@narrativescience/rofl-sam-template-{{ cookiecutter.project_name }}",
+  "version": "1.0.0",
+  "description": "ROFL SAM template for {{ cookiecutter.project_name }}",
+  "private": true,
+  "main": "src/handler.js",
+  "dependencies": {
+    "@narrativescience/rofl": "^0.1.5"
+  }
+}

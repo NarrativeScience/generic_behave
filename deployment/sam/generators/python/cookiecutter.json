@@ -1,0 +1,8 @@
+{
+  "project_name": "new-python-project",
+  "requires_vpc": ["yes", "no"],
+  "requires_dlq": ["yes", "no"],
+  "requires_postgres": ["yes", "no"],
+  "is_nested_stack": ["no", "yes"],
+  "is_cf_custom_resource": ["no", "yes"]
+}
