@@ -33,21 +33,52 @@ def step_debug_pdb(ctx: Context) -> None:
     pdb.set_trace()
 
 
-@step("(?i)the JSON response is logged(?: as (?P<log_level>info|debug))?")
-def step_log_response(ctx: Context, log_level: str = "debug") -> None:
-    """Logs the JSON response from the behave context
+@step(
+    "(?i)the request (?P<content>data|headers) are logged(?: as (?P<log_level>info|debug))?"
+)
+def step_log_request_data(ctx: Context, content: str, log_level: str = "debug") -> None:
+    """Logs the request data from the behave context
+
+        Args:
+            ctx: The behave context
+            content: The type of content to log (headers or data)
+            log_level: A string representing the level of logging to use
+
+        """
+    content = "request_data" if content == "data" else content
+    try:
+        if hasattr(ctx, content):
+            LOGGER.info(
+                pformat(getattr(ctx, content))
+            ) if log_level == "info" else LOGGER.debug(pformat(getattr(ctx, content)))
+        else:
+            LOGGER.info("No response has been saved to the behave context.")
+    except Exception as error:
+        LOGGER.info(f"Exception raised: {error}")
+
+
+@step(
+    "(?i)the (?P<response_type>JSON|text) response is logged(?: as (?P<log_level>info|debug))?"
+)
+def step_log_response(
+    ctx: Context, response_type: str, log_level: str = "debug"
+) -> None:
+    """Logs the response from the behave context
 
     Args:
         ctx: The behave context
+        response_type: The type of response to print
         log_level: A string representing the level of logging to use
 
     """
     try:
         if hasattr(ctx, "response"):
-            LOGGER.info(
-                pformat(ctx.response.json())
-            ) if log_level == "info" else LOGGER.debug(pformat(ctx.response.json()))
+            if response_type.upper() == "JSON":
+                response = pformat(ctx.response.json())
+            else:
+                response = ctx.response
+            LOGGER.info(response) if log_level == "info" else LOGGER.debug(response)
         else:
             LOGGER.info("No response has been saved to the behave context.")
-    except Exception:
-        LOGGER.info("Response is not of type JSON.")
+    except Exception as error:
+        LOGGER.info(f"Exception raised: {error}")
