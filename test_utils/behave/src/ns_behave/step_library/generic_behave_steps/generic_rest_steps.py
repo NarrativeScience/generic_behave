@@ -4,9 +4,11 @@ import logging
 
 from behave import use_step_matcher, when
 from behave.runner import Context
+from requests import Session
+
 from ....ns_behave.common.common_behave_functions import CommonBehave
 from ......requests.src.ns_requests.generic_requests import GenericRequests
-from requests import Session
+
 
 # Enable the regex step matcher
 use_step_matcher("re")
