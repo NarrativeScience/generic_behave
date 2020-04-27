@@ -5,3 +5,5 @@ chromedriver-binary==80.0.3987.16.0
 coloredlogs==14.0
 jsonpath
 requests<3,>=2.19.1
+selenium>=3.9.0
+xvfbwrapper>=0.2.9

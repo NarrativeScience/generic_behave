@@ -5,7 +5,7 @@ import logging
 from behave import then, use_step_matcher
 from behave.runner import Context
 from jsonpath import jsonpath
-from test_utils.behave.src.ns_behave.common.common_behave_functions import CommonBehave
+from ....ns_behave.common.common_behave_functions import CommonBehave
 
 # Enable the regex step matcher for behave in this class
 use_step_matcher("re")
