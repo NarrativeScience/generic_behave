@@ -7,7 +7,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from ns_page_objects.utils.custom_webdriver_conditions import (
+from ..utils.custom_webdriver_conditions import (
     element_is_of_length,
     element_not_present,
     text_to_change,
