@@ -5,5 +5,7 @@
   "chromedriver_binary": "chromedriver-binary",
   "coloredlogs": "coloredlogs",
   "jsonpath": "jsonpath",
-  "requests": "requests"
+  "requests": "requests",
+  "selenium": "selenium",
+  "xvfbwrapper": "xvfbwrapper"
 }
