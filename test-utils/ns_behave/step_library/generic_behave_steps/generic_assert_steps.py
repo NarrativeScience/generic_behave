@@ -5,8 +5,7 @@ import logging
 from behave import then, use_step_matcher
 from behave.runner import Context
 from jsonpath import jsonpath
-
-from ....ns_behave.common.common_behave_functions import CommonBehave
+from ns_behave.common.common_behave_functions import CommonBehave
 
 # Enable the regex step matcher for behave in this class
 use_step_matcher("re")
@@ -41,7 +40,9 @@ def step_assert_status_code(ctx: Context, status: int) -> None:
 # ------------------------------------------------------------------------
 
 
-@then("the response content header should (?P<negate>not )?be (?P<header_type>JSON|HTML)")
+@then(
+    "the response content header should (?P<negate>not )?be (?P<header_type>JSON|HTML)"
+)
 def step_assert_content_header(ctx: Context, negate: str, header_type: str) -> None:
     """Checks if the response is json using it's content header.
 
@@ -52,8 +53,10 @@ def step_assert_content_header(ctx: Context, negate: str, header_type: str) -> N
         header_type: The type of expected response header (json or html)
 
     """
-    expected_headers = {'JSON': 'application/json; charset=utf-8',
-                        'HTML': 'text/html; charset=utf-8'}
+    expected_headers = {
+        "JSON": "application/json; charset=utf-8",
+        "HTML": "text/html; charset=utf-8",
+    }
     header = ctx.response.headers.get("content-type")
     if negate:
         LOGGER.debug("Checking that the response content is not JSON.")

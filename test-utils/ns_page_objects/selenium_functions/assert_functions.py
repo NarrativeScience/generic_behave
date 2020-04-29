@@ -14,7 +14,6 @@ class AssertFunctions:
     All selenium assert functions
     """
 
-
     @staticmethod
     def element_is_present(
         ctx: Context,
