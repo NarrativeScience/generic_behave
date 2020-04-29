@@ -8,5 +8,4 @@ setuptools.setup(
     package_dir={"": "test-utils"},
     packages=setuptools.find_packages("test-utils"),
     provides=setuptools.find_packages("test-utils"),
-    # install_requires=open("requirements.txt").readlines(),
 )
