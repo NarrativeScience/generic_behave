@@ -116,7 +116,7 @@ def step_assert_element_text(
     arguments_tuple = (ctx, ctx.locators, sanitized_element)
     if multiple_exist:
         actual_text = " ".join(
-            GeneralFunctions.get_elements_text_by_name(*arguments_tuple)
+            GeneralFunctions.get_multiple_elements_text_by_name(*arguments_tuple)
         )
     else:
         actual_text = GeneralFunctions.get_elements_text_by_name(*arguments_tuple)
