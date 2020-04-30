@@ -3,15 +3,14 @@ import time
 from typing import Union
 
 from behave.runner import Context
-from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-
 from ns_selenium.utils.custom_webdriver_conditions import (
     element_is_of_length,
     element_not_present,
     text_to_change,
 )
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 # Create a logger instance
 LOGGER = logging.getLogger(__name__)
@@ -253,4 +252,17 @@ class WaitFunctions:
                 f"The '{element_name}' element's text "
                 f"was still '{original_text}' when it was expected to "
                 "have changed"
+            )
+
+    @staticmethod
+    def wait_for_presence_of_alert(
+        ctx: Context, timeout: Union[int, None] = None
+    ) -> None:
+        timeout = timeout or ctx.wait_timeout
+        try:
+            LOGGER.debug("Waiting for the presence of an alert")
+            WebDriverWait(ctx.driver, timeout).until(EC.alert_is_present())
+        except TimeoutException:
+            raise TimeoutException(
+                f"The alert was not present when it" " was expected to be on the page."
             )

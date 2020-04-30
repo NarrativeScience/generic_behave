@@ -228,3 +228,34 @@ class GeneralFunctions:
             f"Attempting to remove whitespace and lowercase all letters in {name_to_sanitize}"
         )
         return name_to_sanitize.strip().replace(" ", "-").lower()
+
+    @staticmethod
+    def get_element_status(ctx: Context, locators: dict, element_name: str) -> str:
+        """Find a elements status using their locator from their page object.
+
+        Args:
+            ctx: The behave context object
+            locators: dict of element locators.
+            element_name: key corresponding to the locator strategy for the
+                group of elements in the page object's locators dictionary
+
+        Returns:
+            A string value of the text at that element
+
+        """
+        LOGGER.debug(f"Attempting to get the status of {element_name}")
+        element_status = GeneralFunctions.get_element_by_name(
+            ctx, locators, element_name
+        ).get_attribute("disabled")
+        LOGGER.debug(f"The element {element_name} has a status of {element_status}")
+        return element_status
+
+    @staticmethod
+    def confirm_alert(ctx: Context) -> None:
+        """Confirm an alert using selenium
+
+        Args:
+            ctx: The behave context
+
+        """
+        ctx.driver.switch_to.alert.accept()

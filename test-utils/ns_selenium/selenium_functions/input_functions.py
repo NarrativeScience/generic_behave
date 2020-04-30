@@ -61,3 +61,24 @@ class InputFunctions:
         """
         LOGGER.debug(f"Attempting to clear {element_name}")
         GeneralFunctions.get_element_by_name(ctx, locators, element_name).clear()
+
+    @staticmethod
+    def clear_text_by_index_in_list_of_elements(
+        ctx: Context, locators: dict, element_name: str, element_index: int
+    ) -> None:
+        """
+        Find an element from a list of elements using it's locator and the index
+            of the element on the page
+
+        Args:
+            ctx: The behave context object.
+            locators: dict of element locators.
+            element_name: The key corresponding to the element's locator strategy
+                in the page object's locators dictionary.
+            element_index: The index the specific desired element should have
+
+        """
+        LOGGER.debug(f"Attempting to clear the {element_name} {element_index}")
+        GeneralFunctions.get_elements_by_name(ctx, locators, element_name)[
+            element_index
+        ].clear()
