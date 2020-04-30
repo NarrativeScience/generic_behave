@@ -48,8 +48,8 @@ def step_link_clicked(ctx: Context, link: str) -> None:
 
     """
     link = sanitize(link)
-    WaitFunctions.wait_for_element_to_be_clickable(ctx, link)
-    ClickFunctions.click_element_by_name(ctx, link)
+    WaitFunctions.wait_for_element_to_be_clickable(ctx, ctx.locators, link)
+    ClickFunctions.click_element_by_name(ctx, ctx.locators, link)
 
 
 @when("the following links are clicked(?::|)")
@@ -80,7 +80,7 @@ def step_assert_element_is_present(
 
     """
     element = sanitize(element)
-    arguments_tuple = (ctx, element, int(timeout)) if timeout else (ctx, element)
+    arguments_tuple = (ctx, ctx.locators, element, int(timeout)) if timeout else (ctx, ctx.locators, element)
     WaitFunctions.wait_until_element_not_present(
         *arguments_tuple
     ) if should_not_be_present else WaitFunctions.wait_for_presence_of_element(
@@ -109,13 +109,13 @@ def step_assert_element_text(
 
     """
     sanitized_element = sanitize(element)
-    arguments_tuple = (ctx, sanitized_element)
+    arguments_tuple = (ctx, ctx.locators, sanitized_element)
     if multiple_exist:
         actual_text = " ".join(
             GeneralFunctions.get_elements_text_by_name(*arguments_tuple)
         )
     else:
-        actual_text = GeneralFunctions.get_element_text_by_name(*arguments_tuple)
+        actual_text = GeneralFunctions.get_elements_text_by_name(*arguments_tuple)
     assert (
         expected_text in actual_text
     ), f"Expected the {element} element to have text: {expected_text} by its text was {actual_text}"
@@ -156,12 +156,12 @@ def step_assert_page_open(ctx: Context, page: str, timeout: str) -> None:
         timeout: (Optional) The amount of time to wait for the page to be open
 
     """
-    arguments_tuple = (ctx, f"{page.lower()}_page_locator")
+    arguments_tuple = (ctx, ctx.locators, f"{page.lower()}_page_locator")
     if timeout is not None:
         WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple, float(timeout))
     WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple)
     ClickFunctions.click_element_by_name(*arguments_tuple)
-    AssertFunctions.validate_page_url(ctx, page)
+    AssertFunctions.validate_page_url(ctx, ctx.page_name_dict, page)
 
 
 @then("the url should contain (?P<text>[-_\w\d]+)")
@@ -190,7 +190,7 @@ def step_input_data(ctx: Context, text: str, text_box: str) -> None:
     """
     sanitized_text_box = sanitize(text_box)
     LOGGER.debug(f"Attempting to fill the {text_box} with {text}")
-    arguments_tuple = (ctx, sanitized_text_box)
+    arguments_tuple = (ctx, ctx.locators, sanitized_text_box)
     WaitFunctions.wait_for_visibility_of_element(*arguments_tuple)
     InputFunctions.send_keys_to_element_by_name(*arguments_tuple, text)
     LOGGER.debug(f"Successfully filled the {text_box} with {text}")
@@ -209,7 +209,7 @@ def step_text_box_cleared(ctx: Context, text_box: str, text_box_index: str) -> N
     """
     LOGGER.debug(f"Attempting to clear the {text_box} {text_box_index}")
     sanitized_text_box = sanitize(text_box)
-    arguments_tuple = (ctx, sanitized_text_box)
+    arguments_tuple = (ctx, ctx.locators, sanitized_text_box)
     WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple)
     if text_box_index is None:
         InputFunctions.clear_text_by_element_name(*arguments_tuple)
@@ -248,7 +248,7 @@ def step_ensure_box_is_checked_or_not_checked(
     """
     LOGGER.debug(f"Attempting to ensure that the {checkbox} is {check_status}.")
     sanitized_checkbox = sanitize(checkbox)
-    arguments_tuple = (ctx, sanitized_checkbox)
+    arguments_tuple = (ctx, ctx.locators, sanitized_checkbox)
     class_name = GeneralFunctions.get_element_by_name(*arguments_tuple).get_attribute(
         "class"
     )
@@ -280,7 +280,7 @@ def step_assert_box_is_checked_or_not_checked(
     LOGGER.debug(f"Attempting to assert that the {checkbox} is {check_status}.")
     sanitized_checkbox = sanitize(checkbox)
     arguments_tuple = (ctx, f"{sanitized_checkbox}_enabled")
-    WaitFunctions.wait_for_visibility_of_element(ctx, sanitized_checkbox)
+    WaitFunctions.wait_for_visibility_of_element(ctx, ctx.locators, sanitized_checkbox)
     assert (
         AssertFunctions.element_is_not_present(*arguments_tuple)
         if check_status == "checked"
@@ -301,7 +301,7 @@ def step_assert_button_is_disabled(ctx: Context, button: str, status: str):
     """
     LOGGER.debug(f"Attempting to assert that the {button} is {status}.")
     assert AssertFunctions.element_is_active(
-        ctx, button
+        ctx, ctx.locators, button
     ), f"The {button} was supposed to be {status} but it was not."
     LOGGER.debug(f"Successfully asserted that the {button} is {status}.")
 
@@ -342,7 +342,7 @@ def step_assert_element_quantity(
     if quantity == 0:
         step_assert_element_is_present(ctx, element, "not")
         return
-    actual_quantity = len(GeneralFunctions.get_elements_by_name(ctx, sanitized_element))
+    actual_quantity = len(GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element))
     assert (
         actual_quantity == expected_quantity
     ), f"Expected there to be {expected_quantity} of {element} but there were {actual_quantity} elements."
@@ -360,7 +360,7 @@ def step_determine_element_quantity(ctx: Context, element: str) -> None:
     ctx.quantities = {} if not hasattr(ctx, "quantities") else ctx.quantities
     sanitized_element = sanitize(element)
     ctx.quantities[sanitized_element] = len(
-        GeneralFunctions.get_elements_by_name(ctx, sanitized_element)
+        GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element)
     )
 
 
@@ -381,9 +381,9 @@ def step_remove_additional_elements(ctx: Context, element: str, quantity: str) -
     """
     sanitized_element = sanitize(element)
     expected_quantity = int(quantity)
-    count = len(GeneralFunctions.get_elements_by_name(ctx, sanitized_element))
+    count = len(GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element))
     while count > expected_quantity:
-        ClickFunctions.click_element_by_name(ctx, sanitized_element)
+        ClickFunctions.click_element_by_name(ctx, ctx.locators, sanitized_element)
         count -= 1
 
 
