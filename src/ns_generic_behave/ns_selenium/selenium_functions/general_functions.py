@@ -1,3 +1,4 @@
+"""Module for General Selenium Functions"""
 import logging
 from typing import List, Union
 
@@ -12,9 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class GeneralFunctions:
-    """
-    All selenium element general functions
-    """
+    """All selenium element general functions"""
 
     @staticmethod
     def get_element_by_name(
@@ -170,7 +169,7 @@ class GeneralFunctions:
 
     @staticmethod
     def set_cache_item(ctx: Context, key: str, value: str) -> None:
-        """set localStorage cache key to a value
+        """Set localStorage cache key to a value
 
         Args:
             ctx: The behave context object
@@ -222,6 +221,7 @@ class GeneralFunctions:
         Args:
             ctx: The behave context
             name_to_sanitize: The variable to be refactored
+
         """
 
         LOGGER.debug(
@@ -249,6 +249,32 @@ class GeneralFunctions:
         ).get_attribute("disabled")
         LOGGER.debug(f"The element {element_name} has a status of {element_status}")
         return element_status
+
+    @staticmethod
+    def get_multiple_elements_text_by_name(
+        ctx: Context, locators: dict, element_name: str
+    ) -> List[str]:
+        """Find a elements text using their locator from their page object.
+
+        Args:
+            ctx: The behave context object
+            locators: dict of element locators.
+            element_name: key corresponding to the locator strategy for the
+                group of elements in the page object's locators dictionary
+
+        Returns:
+            A string value of the text at that element
+
+        """
+        LOGGER.debug(f"Attempting to get text for every element {element_name}")
+        element_text_list = []
+        for element in GeneralFunctions.get_elements_by_name(
+            ctx, locators, element_name
+        ):
+            element_text_list.append(element.get_attribute("text"))
+        LOGGER.info(element_text_list)
+        LOGGER.debug(f"Successfully obtained text for every element {element_name}")
+        return element_text_list
 
     @staticmethod
     def confirm_alert(ctx: Context) -> None:
