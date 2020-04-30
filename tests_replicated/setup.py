@@ -5,6 +5,8 @@ import setuptools
 setuptools.setup(
     name='ns_tests_replicated',
     version=os.environ.get("BUILD_VERSION", "0.0.0.dev-1"),
-    dependency_links=['git+git://github.com/NarrativeScience/generic_behave/tree/reorganized_file_structure#egg=generic_behave'],
-    install_requires=open("requirements.txt").readlines(),
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(include=['ns_behave', 'ns_page_objects', 'ns_requests']),
+    provides=setuptools.find_packages(include=['ns_behave', 'ns_page_objects', 'ns_requests']),
+    entry_points={"console_scripts": ["tests_replicated=ns_tests_replicated.behave_cli:cli"]},
 )

@@ -13,8 +13,8 @@ from selenium.webdriver.remote.remote_connection import LOGGER as LOG
 from urllib3.exceptions import ProtocolError
 from xvfbwrapper import Xvfb
 
-from ns_behave.common import environment_functions
-from ns_selenium import PAGE_CLASSES
+from src.ns_generic_behave.ns_behave.common import environment_functions
+from src.ns_generic_behave.ns_selenium import PAGE_CLASSES
 
 # Set up a logger
 LOGGER = logging.getLogger(__name__)

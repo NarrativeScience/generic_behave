@@ -6,7 +6,7 @@ from pprint import pformat
 
 from behave import step, use_step_matcher
 from behave.runner import Context
-from ns_behave.common.common_behave_functions import CommonBehave
+from src.ns_generic_behave.ns_behave.common.common_behave_functions import CommonBehave
 
 # Enable the regex step matcher for behave in this class
 use_step_matcher("re")

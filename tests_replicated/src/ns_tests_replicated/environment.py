@@ -6,8 +6,8 @@ import logging
 import ansicolor
 from behave.model import Feature, Scenario, Step, Tag
 from behave.runner import Context
-from ns_behave.common import environment_functions
-from ns_behave.common.common_behave_functions import CommonBehave
+from src.ns_generic_behave.ns_behave.common import environment_functions
+from src.ns_generic_behave.ns_behave.common.common_behave_functions import CommonBehave
 
 
 # Initialize a logger

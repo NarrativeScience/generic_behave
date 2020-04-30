@@ -1,0 +1,10 @@
+{
+  "generator": "python",
+  "version": 1,
+  "project_name": "ns-tests-replicated-2",
+  "requires_vpc": "yes",
+  "requires_dlq": "no",
+  "requires_postgres": "no",
+  "is_nested_stack": "no",
+  "is_cf_custom_resource": "no"
+}
