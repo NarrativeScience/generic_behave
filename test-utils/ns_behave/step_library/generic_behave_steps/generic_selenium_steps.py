@@ -47,7 +47,7 @@ def step_link_clicked(ctx: Context, link: str) -> None:
         link: The link that should be clicked
 
     """
-    link = sanitize(link)
+    link = _sanitize(link)
     WaitFunctions.wait_for_element_to_be_clickable(ctx, ctx.locators, link)
     ClickFunctions.click_element_by_name(ctx, ctx.locators, link)
 
@@ -79,8 +79,12 @@ def step_assert_element_is_present(
         timeout: The amount of time to wait for the element to be present or absent
 
     """
-    element = sanitize(element)
-    arguments_tuple = (ctx, ctx.locators, element, int(timeout)) if timeout else (ctx, ctx.locators, element)
+    element = _sanitize(element)
+    arguments_tuple = (
+        (ctx, ctx.locators, element, int(timeout))
+        if timeout
+        else (ctx, ctx.locators, element)
+    )
     WaitFunctions.wait_until_element_not_present(
         *arguments_tuple
     ) if should_not_be_present else WaitFunctions.wait_for_presence_of_element(
@@ -108,7 +112,7 @@ def step_assert_element_text(
         expected_text: The text the element is expected to have
 
     """
-    sanitized_element = sanitize(element)
+    sanitized_element = _sanitize(element)
     arguments_tuple = (ctx, ctx.locators, sanitized_element)
     if multiple_exist:
         actual_text = " ".join(
@@ -188,7 +192,7 @@ def step_input_data(ctx: Context, text: str, text_box: str) -> None:
         text_box: The box that will contain the input text
 
     """
-    sanitized_text_box = sanitize(text_box)
+    sanitized_text_box = _sanitize(text_box)
     LOGGER.debug(f"Attempting to fill the {text_box} with {text}")
     arguments_tuple = (ctx, ctx.locators, sanitized_text_box)
     WaitFunctions.wait_for_visibility_of_element(*arguments_tuple)
@@ -208,7 +212,7 @@ def step_text_box_cleared(ctx: Context, text_box: str, text_box_index: str) -> N
 
     """
     LOGGER.debug(f"Attempting to clear the {text_box} {text_box_index}")
-    sanitized_text_box = sanitize(text_box)
+    sanitized_text_box = _sanitize(text_box)
     arguments_tuple = (ctx, ctx.locators, sanitized_text_box)
     WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple)
     if text_box_index is None:
@@ -223,11 +227,13 @@ def step_text_box_cleared(ctx: Context, text_box: str, text_box_index: str) -> N
 @given("the browser size of (?P<width>\d+)x(?P<height>\d+)")
 def step_set_browser_size(ctx: Context, width: int, height: int) -> None:
     """
-    This step will set the browser size to a custom dimension for width and height.
+    Sets the browser size to a custom dimension for width and height.
+
     Args:
         ctx: The behave context.
         width: The width to set.
         height: The height to set.
+
     """
     LOGGER.debug(f"Attempting to set the browser size to {width}x{height}")
     ctx.driver.set_wigndow_size(width, height)
@@ -247,7 +253,7 @@ def step_ensure_box_is_checked_or_not_checked(
 
     """
     LOGGER.debug(f"Attempting to ensure that the {checkbox} is {check_status}.")
-    sanitized_checkbox = sanitize(checkbox)
+    sanitized_checkbox = _sanitize(checkbox)
     arguments_tuple = (ctx, ctx.locators, sanitized_checkbox)
     class_name = GeneralFunctions.get_element_by_name(*arguments_tuple).get_attribute(
         "class"
@@ -278,19 +284,22 @@ def step_assert_box_is_checked_or_not_checked(
 
     """
     LOGGER.debug(f"Attempting to assert that the {checkbox} is {check_status}.")
-    sanitized_checkbox = sanitize(checkbox)
-    arguments_tuple = (ctx, f"{sanitized_checkbox}_enabled")
-    WaitFunctions.wait_for_visibility_of_element(ctx, ctx.locators, sanitized_checkbox)
+    sanitized_checkbox = _sanitize(checkbox)
+    arguments_tuple = (ctx, ctx.locators, sanitized_checkbox)
+    WaitFunctions.wait_for_visibility_of_element(*arguments_tuple)
+    class_name = GeneralFunctions.get_element_by_name(*arguments_tuple).get_attribute(
+        "class"
+    )
     assert (
-        AssertFunctions.element_is_not_present(*arguments_tuple)
+        "checked" in class_name
         if check_status == "checked"
-        else AssertFunctions.element_is_present(*arguments_tuple)
+        else "checked" not in class_name
     ), f"The {checkbox} was supposed to be {check_status} but it was not."
     LOGGER.debug(f"Successfully asserted that the {checkbox} is {check_status}.")
 
 
 @then("the (?P<button>[-_\w]+) should be (?P<status>disabled|enabled)")
-def step_assert_button_is_disabled(ctx: Context, button: str, status: str):
+def step_assert_button_is_disabled_or_enabled(ctx: Context, button: str, status: str):
     """Assert that a button is enabled or disabled
 
     Args:
@@ -306,62 +315,16 @@ def step_assert_button_is_disabled(ctx: Context, button: str, status: str):
     LOGGER.debug(f"Successfully asserted that the {button} is {status}.")
 
 
-@step("the alert is confirmed")
-def step_confirm_alert(ctx: Context) -> None:
+@step("the CSS alert is confirmed")
+def step_confirm_css_alert(ctx: Context) -> None:
     """Wait for the alert to be clickable and click it
 
     Args:
         ctx: The behave context
+
     """
     WaitFunctions.wait_for_presence_of_alert(ctx)
     GeneralFunctions.confirm_alert(ctx)
-
-
-@then(
-    "the (?P<element>[-\w\d\s]+) should be present (?P<quantity>\d+) (?P<relative_quantity>|more )?time(?:s)?"
-)
-def step_assert_element_quantity(
-    ctx: Context, element: str, quantity: str, relative_quantity: str
-) -> None:
-    """Checks how many of the given element appear on the page
-
-    Args:
-        ctx: Context
-        element: The element to find
-        quantity: The number of the given element that should be present
-        relative_quantity: A string to determine if the given quantity is relative to the previous quantity
-            (see step_determine_element_quantity()) or an absolute quantity
-
-    """
-    sanitized_element = sanitize(element)
-    expected_quantity = (
-        int(quantity) + ctx.quantities[sanitized_element]
-        if relative_quantity
-        else int(quantity)
-    )
-    if quantity == 0:
-        step_assert_element_is_present(ctx, element, "not")
-        return
-    actual_quantity = len(GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element))
-    assert (
-        actual_quantity == expected_quantity
-    ), f"Expected there to be {expected_quantity} of {element} but there were {actual_quantity} elements."
-
-
-@given("the (?P<element>[-\w\d\s]+)'s quantity is saved")
-def step_determine_element_quantity(ctx: Context, element: str) -> None:
-    """Checks how many of the given element appear on the page
-
-    Args:
-        ctx: Context
-        element: The element to find
-
-    """
-    ctx.quantities = {} if not hasattr(ctx, "quantities") else ctx.quantities
-    sanitized_element = sanitize(element)
-    ctx.quantities[sanitized_element] = len(
-        GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element)
-    )
 
 
 @given(
@@ -379,15 +342,17 @@ def step_remove_additional_elements(ctx: Context, element: str, quantity: str) -
         quantity: The times the element should appear on the page
 
     """
-    sanitized_element = sanitize(element)
+    sanitized_element = _sanitize(element)
     expected_quantity = int(quantity)
-    count = len(GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element))
+    count = len(
+        GeneralFunctions.get_elements_by_name(ctx, ctx.locators, sanitized_element)
+    )
     while count > expected_quantity:
         ClickFunctions.click_element_by_name(ctx, ctx.locators, sanitized_element)
         count -= 1
 
 
-def sanitize(string: str) -> str:
+def _sanitize(string: str) -> str:
     """Function used to clean strings in order to provide a standard input for other functions
 
     Args:
