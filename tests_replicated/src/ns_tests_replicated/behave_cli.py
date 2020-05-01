@@ -1,6 +1,5 @@
 """Programmatic entrypoint to running behave from the command line"""
 import os
-import sys
 
 from behave.__main__ import main as behave_main
 

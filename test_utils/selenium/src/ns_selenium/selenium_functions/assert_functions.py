@@ -3,7 +3,7 @@ import re
 from typing import Union
 
 from behave.runner import Context
-from ns_selenium.selenium_functions.general_functions import GeneralFunctions
+from test_utils.selenium.src.ns_selenium.selenium_functions.general_functions import GeneralFunctions
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait

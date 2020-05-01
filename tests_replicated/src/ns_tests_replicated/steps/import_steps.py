@@ -1,6 +1,6 @@
 """Module contains all the imports for status code feature files"""
 
-from src.ns_generic_behave.ns_behave.step_library.generic_behave_steps import (  # noqa: F401
+from test_utils.behave.src.ns_behave.step_library.generic_behave_steps import (  # noqa: F401
     generic_assert_steps,
     generic_debug_steps,
     generic_rest_steps,
