@@ -3,7 +3,7 @@ import time
 from typing import Union
 
 from behave.runner import Context
-from test_utils.selenium.src.ns_selenium.utils.custom_webdriver_conditions import (
+from generic_behave.ns_selenium.utils.custom_webdriver_conditions import (
     element_is_of_length,
     element_not_present,
     text_to_change,

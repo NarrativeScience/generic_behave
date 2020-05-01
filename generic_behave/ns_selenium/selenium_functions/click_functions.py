@@ -4,7 +4,7 @@ from behave.runner import Context
 from selenium.webdriver import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 
-from test_utils.selenium.src.ns_selenium.selenium_functions.general_functions import GeneralFunctions
+from generic_behave.ns_selenium.selenium_functions.general_functions import GeneralFunctions
 
 LOGGER = logging.getLogger(__name__)
 

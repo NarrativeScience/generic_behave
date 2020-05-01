@@ -9,11 +9,11 @@ import logging
 
 from behave import given, step, then, use_step_matcher, when
 from behave.runner import Context
-from test_utils.selenium.src.ns_selenium.selenium_functions.assert_functions import AssertFunctions
-from test_utils.selenium.src.ns_selenium.selenium_functions.click_functions import ClickFunctions
-from test_utils.selenium.src.ns_selenium.selenium_functions.general_functions import GeneralFunctions
-from test_utils.selenium.src.ns_selenium.selenium_functions.input_functions import InputFunctions
-from test_utils.selenium.src.ns_selenium.selenium_functions.wait_functions import WaitFunctions
+from generic_behave.ns_selenium.selenium_functions.assert_functions import AssertFunctions
+from generic_behave.ns_selenium.selenium_functions.click_functions import ClickFunctions
+from generic_behave.ns_selenium.selenium_functions.general_functions import GeneralFunctions
+from generic_behave.ns_selenium.selenium_functions.input_functions import InputFunctions
+from generic_behave.ns_selenium.selenium_functions.wait_functions import WaitFunctions
 
 # Initialize a logger
 
