@@ -1,0 +1,25 @@
+python_library(
+    name="lambda-python-ns-tests-replicated-2-lib",
+    sources=globs("lambda_handler/**/*"),
+    dependencies=[
+        # Add dependencies here
+        "3rdparty/python:ansicolor",
+        "3rdparty/python:behave",
+        "3rdparty/python:boto3",
+        "3rdparty/python:coloredlogs",
+        "3rdparty/python:jsonpath",
+        "3rdparty/python:requests",
+        "generic_behave",
+        "tests_replicated/src:lib"
+    ],
+)
+python_binary(
+    name="lambda-python-ns-tests-replicated-2-bin",
+    source="lambda_handler/lambda_handler.py",
+    dependencies=[":lambda-python-ns-tests-replicated-2-lib"],
+)
+python_awslambda(
+    name="lambda-python-ns-tests-replicated",
+    binary=":lambda-python-ns-tests-replicated-2-bin",
+    handler="lambda_handler.lambda_handler:lambda_handler",
+)
