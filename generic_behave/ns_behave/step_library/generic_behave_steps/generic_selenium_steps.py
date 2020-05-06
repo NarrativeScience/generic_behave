@@ -9,9 +9,14 @@ import logging
 
 from behave import given, step, then, use_step_matcher, when
 from behave.runner import Context
-from generic_behave.ns_selenium.selenium_functions.assert_functions import AssertFunctions
+from generic_behave.ns_behave.common.common_behave_functions import CommonBehave
+from generic_behave.ns_selenium.selenium_functions.assert_functions import (
+    AssertFunctions,
+)
 from generic_behave.ns_selenium.selenium_functions.click_functions import ClickFunctions
-from generic_behave.ns_selenium.selenium_functions.general_functions import GeneralFunctions
+from generic_behave.ns_selenium.selenium_functions.general_functions import (
+    GeneralFunctions,
+)
 from generic_behave.ns_selenium.selenium_functions.input_functions import InputFunctions
 from generic_behave.ns_selenium.selenium_functions.wait_functions import WaitFunctions
 
@@ -23,7 +28,7 @@ LOGGER = logging.getLogger(__name__)
 use_step_matcher("re")
 
 
-@when("the user navigates to (?P<endpoint>.*)")
+@when("the user navigates to (?P<endpoint>[-_#/.\w\d]+)")
 def step_url_navigation(ctx: Context, endpoint: str) -> None:
     """
     Navigate to a page by it's url
@@ -34,6 +39,7 @@ def step_url_navigation(ctx: Context, endpoint: str) -> None:
 
     """
     LOGGER.debug(f"Attempting to navigate to {ctx.host}{endpoint}")
+    endpoint = CommonBehave.interpolate_context_attributes(ctx, endpoint)
     ctx.driver.get(f"{ctx.host}{endpoint}")
     LOGGER.debug(f"Successfully navigated to {ctx.host}{endpoint}")
 
@@ -52,7 +58,7 @@ def step_link_clicked(ctx: Context, link: str) -> None:
     ClickFunctions.click_element_by_name(ctx, ctx.locators, link)
 
 
-@when("the following links are clicked(?::|)")
+@when("the following linksu are clicked(?::|)")
 def step_links_clicked_in_order(ctx: Context) -> None:
     """Click a series of links in order
 
@@ -182,7 +188,7 @@ def step_asset_url_contains(ctx: Context, text: str) -> None:
     ), f"Expected the url to contain {text} but it did not"
 
 
-@step("(?P<text>[-._\w\d\s]+) is input into (?P<text_box>[_\w\s]+)")
+@step("(?P<text>[-.@!_\w\d\s]+) is input into (?P<text_box>[_\w\s]+)")
 def step_input_data(ctx: Context, text: str, text_box: str) -> None:
     """
 
@@ -198,6 +204,19 @@ def step_input_data(ctx: Context, text: str, text_box: str) -> None:
     WaitFunctions.wait_for_visibility_of_element(*arguments_tuple)
     InputFunctions.send_keys_to_element_by_name(*arguments_tuple, text)
     LOGGER.debug(f"Successfully filled the {text_box} with {text}")
+
+
+@step("the following data are input into the text boxes(?::|)?")
+def step_input_multiple_text_box_data(ctx: Context) -> None:
+    """
+    Input text for multiple text boxes
+
+    Args:
+        ctx: The behave context
+
+    """
+    for row in ctx.table:
+        step_input_data(ctx, row[0], row[1])
 
 
 @step("(?P<text_box>[_\w\s]+)(?: (?P<text_box_index>\d+))? is cleared?")
@@ -222,6 +241,19 @@ def step_text_box_cleared(ctx: Context, text_box: str, text_box_index: str) -> N
             *arguments_tuple, int(text_box_index)
         )
     LOGGER.debug(f"Successfully cleared the {text_box} {text_box_index}")
+
+
+@step("the following text boxes are cleared(?::|)?")
+def step_clear_multiple_text_boxes(ctx: Context) -> None:
+    """
+    Clear text for multiple text boxes
+
+    Args:
+        ctx: The behave context
+
+    """
+    for row in ctx.table:
+        step_text_box_cleared(ctx, row[0], None)
 
 
 @given("the browser size of (?P<width>\d+)x(?P<height>\d+)")
