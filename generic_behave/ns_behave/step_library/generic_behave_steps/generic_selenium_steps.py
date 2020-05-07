@@ -6,6 +6,7 @@ Generic selenium steps that will allow for all generic selenium actions. Some ex
 4) Verifying page title
 """
 import logging
+import re
 
 from behave import given, step, then, use_step_matcher, when
 from behave.runner import Context
@@ -154,24 +155,6 @@ def step_assert_elements_are_present(ctx: Context) -> None:
     """
     for row in ctx.table:
         step_assert_element_is_present(ctx, row[0])
-
-
-@then("the (?P<page>[_\w]+) page should be open(?: after (?P<timeout>\d+) seconds)?")
-def step_assert_page_open(ctx: Context, page: str, timeout: str) -> None:
-    """Assert that a given page is open
-
-    Args:
-        ctx: The behave context
-        page: The page that should be open
-        timeout: (Optional) The amount of time to wait for the page to be open
-
-    """
-    arguments_tuple = (ctx, ctx.locators, f"{page.lower()}_page_locator")
-    if timeout is not None:
-        WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple, float(timeout))
-    WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple)
-    ClickFunctions.click_element_by_name(*arguments_tuple)
-    AssertFunctions.validate_page_url(ctx, ctx.page_name_dict, page)
 
 
 @then("the url should contain (?P<text>[-_\w\d]+)")
@@ -391,4 +374,4 @@ def _sanitize(string: str) -> str:
         string: The string to be sanitized
 
     """
-    return string.lower().replace(" ", "_").strip()
+    return re.sub(" ", "_", string).lower().strip()
