@@ -114,7 +114,7 @@ def step_assert_element_text(
 
     Args:
         ctx: The behave context
-        multiple_exist: A string
+        multiple_exist: Represents whether or not multiple elements will exist
         element: The element expected to be present
         expected_text: The text the element is expected to have
 
@@ -132,17 +132,37 @@ def step_assert_element_text(
     ), f"Expected the {element} element to have text: {expected_text} by its text was {actual_text}"
 
 
-@then("the (?P<element>[_\w]+) element should have the following text(?::|)?")
-def step_assert_element_text_multiline(ctx: Context, element: str) -> None:
+@then(
+    "(?P<multiple_exist>one of )?the (?P<element>[_\w]+) element(?:s)? should have the following text(?::|)?"
+)
+def step_assert_element_text_multiline(
+    ctx: Context, multiple_exist: str, element: str
+) -> None:
     """Assert that the provided dropdown option is present
 
     Args:
         ctx: The behave context
+        multiple_exist: Represents whether or not multiple elements will exist
         element: The element expected to be present
 
     """
     for row in ctx.table:
-        step_assert_element_text(ctx, "", element, row[0])
+        step_assert_element_text(ctx, multiple_exist, element, row[0])
+
+
+@then(
+    "(?P<multiple_exist>one of )?the following element(?:s)? should have the corresponding text(?::|)?"
+)
+def step_assert_multiple_elements_text(ctx: Context, multiple_exist: str) -> None:
+    """Assert that the provided dropdown option is present
+
+    Args:
+        ctx: The behave context
+        multiple_exist: Represents whether or not multiple elements will exist
+
+    """
+    for row in ctx.table:
+        step_assert_element_text(ctx, multiple_exist, row[0], row[1])
 
 
 @then("the following elements should be present(?::|)?")
