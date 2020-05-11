@@ -29,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 use_step_matcher("re")
 
 
-@when("the user navigates to (?P<endpoint>[-_#/.\w\d]+)")
+@when("the user navigates to (?P<endpoint>[-_#{}/.\w\d]+)")
 def step_url_navigation(ctx: Context, endpoint: str) -> None:
     """
     Navigate to a page by it's url
@@ -59,7 +59,7 @@ def step_link_clicked(ctx: Context, link: str) -> None:
     ClickFunctions.click_element_by_name(ctx, ctx.locators, link)
 
 
-@when("the following linksu are clicked(?::|)")
+@when("the following links are clicked(?::|)")
 def step_links_clicked_in_order(ctx: Context) -> None:
     """Click a series of links in order
 
