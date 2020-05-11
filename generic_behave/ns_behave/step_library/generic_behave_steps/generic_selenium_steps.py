@@ -6,12 +6,18 @@ Generic selenium steps that will allow for all generic selenium actions. Some ex
 4) Verifying page title
 """
 import logging
+import re
 
 from behave import given, step, then, use_step_matcher, when
 from behave.runner import Context
-from generic_behave.ns_selenium.selenium_functions.assert_functions import AssertFunctions
+from generic_behave.ns_behave.common.common_behave_functions import CommonBehave
+from generic_behave.ns_selenium.selenium_functions.assert_functions import (
+    AssertFunctions,
+)
 from generic_behave.ns_selenium.selenium_functions.click_functions import ClickFunctions
-from generic_behave.ns_selenium.selenium_functions.general_functions import GeneralFunctions
+from generic_behave.ns_selenium.selenium_functions.general_functions import (
+    GeneralFunctions,
+)
 from generic_behave.ns_selenium.selenium_functions.input_functions import InputFunctions
 from generic_behave.ns_selenium.selenium_functions.wait_functions import WaitFunctions
 
@@ -23,7 +29,7 @@ LOGGER = logging.getLogger(__name__)
 use_step_matcher("re")
 
 
-@when("the user navigates to (?P<endpoint>.*)")
+@when("the user navigates to (?P<endpoint>[-_#/.\w\d]+)")
 def step_url_navigation(ctx: Context, endpoint: str) -> None:
     """
     Navigate to a page by it's url
@@ -34,6 +40,7 @@ def step_url_navigation(ctx: Context, endpoint: str) -> None:
 
     """
     LOGGER.debug(f"Attempting to navigate to {ctx.host}{endpoint}")
+    endpoint = CommonBehave.interpolate_context_attributes(ctx, endpoint)
     ctx.driver.get(f"{ctx.host}{endpoint}")
     LOGGER.debug(f"Successfully navigated to {ctx.host}{endpoint}")
 
@@ -52,7 +59,7 @@ def step_link_clicked(ctx: Context, link: str) -> None:
     ClickFunctions.click_element_by_name(ctx, ctx.locators, link)
 
 
-@when("the following links are clicked(?::|)")
+@when("the following linksu are clicked(?::|)")
 def step_links_clicked_in_order(ctx: Context) -> None:
     """Click a series of links in order
 
@@ -107,7 +114,7 @@ def step_assert_element_text(
 
     Args:
         ctx: The behave context
-        multiple_exist: A string
+        multiple_exist: Represents whether or not multiple elements will exist
         element: The element expected to be present
         expected_text: The text the element is expected to have
 
@@ -125,17 +132,37 @@ def step_assert_element_text(
     ), f"Expected the {element} element to have text: {expected_text} by its text was {actual_text}"
 
 
-@then("the (?P<element>[_\w]+) element should have the following text(?::|)?")
-def step_assert_element_text_multiline(ctx: Context, element: str) -> None:
+@then(
+    "(?P<multiple_exist>one of )?the (?P<element>[_\w]+) element(?:s)? should have the following text(?::|)?"
+)
+def step_assert_element_text_multiline(
+    ctx: Context, multiple_exist: str, element: str
+) -> None:
     """Assert that the provided dropdown option is present
 
     Args:
         ctx: The behave context
+        multiple_exist: Represents whether or not multiple elements will exist
         element: The element expected to be present
 
     """
     for row in ctx.table:
-        step_assert_element_text(ctx, "", element, row[0])
+        step_assert_element_text(ctx, multiple_exist, element, row[0])
+
+
+@then(
+    "(?P<multiple_exist>one of )?the following element(?:s)? should have the corresponding text(?::|)?"
+)
+def step_assert_multiple_elements_text(ctx: Context, multiple_exist: str) -> None:
+    """Assert that the provided dropdown option is present
+
+    Args:
+        ctx: The behave context
+        multiple_exist: Represents whether or not multiple elements will exist
+
+    """
+    for row in ctx.table:
+        step_assert_element_text(ctx, multiple_exist, row[0], row[1])
 
 
 @then("the following elements should be present(?::|)?")
@@ -148,24 +175,6 @@ def step_assert_elements_are_present(ctx: Context) -> None:
     """
     for row in ctx.table:
         step_assert_element_is_present(ctx, row[0])
-
-
-@then("the (?P<page>[_\w]+) page should be open(?: after (?P<timeout>\d+) seconds)?")
-def step_assert_page_open(ctx: Context, page: str, timeout: str) -> None:
-    """Assert that a given page is open
-
-    Args:
-        ctx: The behave context
-        page: The page that should be open
-        timeout: (Optional) The amount of time to wait for the page to be open
-
-    """
-    arguments_tuple = (ctx, ctx.locators, f"{page.lower()}_page_locator")
-    if timeout is not None:
-        WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple, float(timeout))
-    WaitFunctions.wait_for_element_to_be_clickable(*arguments_tuple)
-    ClickFunctions.click_element_by_name(*arguments_tuple)
-    AssertFunctions.validate_page_url(ctx, ctx.page_name_dict, page)
 
 
 @then("the url should contain (?P<text>[-_\w\d]+)")
@@ -182,7 +191,7 @@ def step_asset_url_contains(ctx: Context, text: str) -> None:
     ), f"Expected the url to contain {text} but it did not"
 
 
-@step("(?P<text>[-._\w\d\s]+) is input into (?P<text_box>[_\w\s]+)")
+@step("(?P<text>[-.@!_\w\d\s]+) is input into (?P<text_box>[_\w\s]+)")
 def step_input_data(ctx: Context, text: str, text_box: str) -> None:
     """
 
@@ -198,6 +207,19 @@ def step_input_data(ctx: Context, text: str, text_box: str) -> None:
     WaitFunctions.wait_for_visibility_of_element(*arguments_tuple)
     InputFunctions.send_keys_to_element_by_name(*arguments_tuple, text)
     LOGGER.debug(f"Successfully filled the {text_box} with {text}")
+
+
+@step("the following data are input into the text boxes(?::|)?")
+def step_input_multiple_text_box_data(ctx: Context) -> None:
+    """
+    Input text for multiple text boxes
+
+    Args:
+        ctx: The behave context
+
+    """
+    for row in ctx.table:
+        step_input_data(ctx, row[0], row[1])
 
 
 @step("(?P<text_box>[_\w\s]+)(?: (?P<text_box_index>\d+))? is cleared?")
@@ -222,6 +244,19 @@ def step_text_box_cleared(ctx: Context, text_box: str, text_box_index: str) -> N
             *arguments_tuple, int(text_box_index)
         )
     LOGGER.debug(f"Successfully cleared the {text_box} {text_box_index}")
+
+
+@step("the following text boxes are cleared(?::|)?")
+def step_clear_multiple_text_boxes(ctx: Context) -> None:
+    """
+    Clear text for multiple text boxes
+
+    Args:
+        ctx: The behave context
+
+    """
+    for row in ctx.table:
+        step_text_box_cleared(ctx, row[0], None)
 
 
 @given("the browser size of (?P<width>\d+)x(?P<height>\d+)")
@@ -359,4 +394,4 @@ def _sanitize(string: str) -> str:
         string: The string to be sanitized
 
     """
-    return string.lower().replace(" ", "_").strip()
+    return re.sub(" ", "_", string).lower().strip()

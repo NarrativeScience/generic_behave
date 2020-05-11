@@ -243,12 +243,33 @@ class GeneralFunctions:
             A string value of the text at that element
 
         """
-        LOGGER.debug(f"Attempting to get the status of {element_name}")
-        element_status = GeneralFunctions.get_element_by_name(
+        return GeneralFunctions.get_element_attribute(
+            ctx, locators, element_name, "disabled"
+        )
+
+    @staticmethod
+    def get_element_attribute(
+        ctx: Context, locators: dict, element_name: str, attribute: str
+    ) -> str:
+        """Find a elements status using their locator from their page object.
+
+        Args:
+            ctx: The behave context object
+            locators: dict of element locators.
+            element_name: key corresponding to the locator strategy for the
+                group of elements in the page object's locators dictionary
+            attribute: The attribute to get for the element
+
+        Returns:
+            A string value of the text at that element
+
+        """
+        LOGGER.debug(f"Attempting to get the {attribute} of {element_name}")
+        attribute = GeneralFunctions.get_element_by_name(
             ctx, locators, element_name
-        ).get_attribute("disabled")
-        LOGGER.debug(f"The element {element_name} has a status of {element_status}")
-        return element_status
+        ).get_attribute(attribute)
+        LOGGER.debug(f"Successfully got the element {attribute} of {element_name} ")
+        return attribute
 
     @staticmethod
     def get_multiple_elements_text_by_name(
@@ -271,8 +292,8 @@ class GeneralFunctions:
         for element in GeneralFunctions.get_elements_by_name(
             ctx, locators, element_name
         ):
-            element_text_list.append(element.get_attribute("text"))
-        LOGGER.info(element_text_list)
+            text_attribute = element.get_attribute("text")
+            element_text_list.append(text_attribute if text_attribute else element.text)
         LOGGER.debug(f"Successfully obtained text for every element {element_name}")
         return element_text_list
 
