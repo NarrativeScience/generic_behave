@@ -61,6 +61,43 @@ class WaitFunctions:
             )
 
     @staticmethod
+    def wait_for_presence_of_frame_then_switch(
+        ctx: Context,
+        frame_name: str,
+        timeout: Union[int, None] = None,
+    ) -> bool:
+        """Wait until the specified frame is present on the page and switch to it.
+
+        Args:
+            ctx: The behave context object.
+            locators: dict of element locators.
+            element_name: key corresponding to the element's locator in the
+                page object's locators dictionary.
+            timeout: seconds to wait for the element to appear or None.
+                Default is set in the environment.py file.
+
+        Raises:
+            TimeoutException: if the element was not present after the timeout
+                was reached
+
+        Returns:
+            True if element is present
+        """
+        timeout = timeout or ctx.wait_timeout
+        try:
+            LOGGER.debug(f"Waiting for the presence of frame: {frame_name}")
+            WebDriverWait(ctx.driver, timeout).until(
+                EC.frame_to_be_available_and_switch_to_it(frame_name)
+            )
+            LOGGER.debug(f"Frame: {frame_name} was found to be present and was switched to.")
+            return True
+        except TimeoutException:
+            raise TimeoutException(
+                f"The '{frame_name}' frame was not present when it"
+                " was expected to be on the page."
+            )
+
+    @staticmethod
     def wait_until_element_not_present(
         ctx: Context,
         locators: dict,

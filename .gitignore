@@ -5,7 +5,7 @@
 **/.cache/
 **/.tox
 **/*.coverage
-**/*.egg-info
+#**/*.egg-info
 **/*.pyc
 **/dist
 .pants.d
