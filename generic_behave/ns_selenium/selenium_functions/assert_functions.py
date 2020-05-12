@@ -107,7 +107,7 @@ class AssertFunctions:
 
         """
         LOGGER.debug(f"Attempting to validate that the url contains: {text}")
-        return True if re.findall(text, ctx.driver.current_url) else False
+        return True if text in ctx.driver.current_url else False
 
     @staticmethod
     def validate_page_url(ctx: Context, page_url_dict: dict, page_name: str) -> bool:
