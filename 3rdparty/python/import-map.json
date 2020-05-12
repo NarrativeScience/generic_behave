@@ -7,5 +7,4 @@
   "jsonpath": "jsonpath",
   "requests": "requests",
   "selenium": "selenium",
-  "xvfbwrapper": "xvfbwrapper"
 }

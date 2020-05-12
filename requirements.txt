@@ -6,5 +6,3 @@ jsonpath
 requests<3,>=2.19.1
 selenium>=3.9.0
 setuptools
-wheel
-xvfbwrapper>=0.2.9
