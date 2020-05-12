@@ -1,7 +1,6 @@
 ansicolor>=0.2.6
 behave>=1.2.6
 boto3
-chromedriver-binary==81.0.4044.69
 coloredlogs==14.0
 jsonpath
 requests<3,>=2.19.1
