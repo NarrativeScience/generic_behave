@@ -177,7 +177,7 @@ def step_assert_elements_are_present(ctx: Context) -> None:
         step_assert_element_is_present(ctx, row[0])
 
 
-@then("the url should contain (?P<text>[-_\w\d]+)")
+@then("the url should contain (?P<text>.*)")
 def step_asset_url_contains(ctx: Context, text: str) -> None:
     """Assert that the url contains given text
 
@@ -348,6 +348,35 @@ def step_assert_button_is_disabled_or_enabled(ctx: Context, button: str, status:
         ctx, ctx.locators, button
     ), f"The {button} was supposed to be {status} but it was not."
     LOGGER.debug(f"Successfully asserted that the {button} is {status}.")
+
+
+@then(
+    "the (?P<element>[-\w\d\s]+)'s (?P<attribute>.*) attribute matches (?P<expected_value>.*)"
+)
+def step_assert_element_attribute(
+    ctx: Context, element: str, attribute: str, expected_value: str
+) -> None:
+    """Assert that the given element has a particular value
+
+    Args:
+        ctx: The behave context
+        element: The element which is under review
+        attribute: The attribute of the element under review
+        expected_value: The value the attribute will have
+
+    """
+    LOGGER.debug(
+        f"Attempting to assert that the {element}'s {attribute} matches {expected_value}."
+    )
+    actual_value = GeneralFunctions.get_element_attribute(
+        ctx, ctx.locators, element, attribute
+    )
+    assert re.match(
+        expected_value, actual_value
+    ), f"Expected {element}'s {attribute} to be {expected_value} but it was {actual_value}"
+    LOGGER.debug(
+        f"Successfully asserted that the {element}'s {attribute} matches {expected_value}."
+    )
 
 
 @step("the CSS alert is confirmed")
