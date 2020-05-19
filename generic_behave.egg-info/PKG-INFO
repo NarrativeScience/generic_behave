@@ -1,4 +1,4 @@
-Metadata-Version: 1.1
+Metadata-Version: 1.0
 Name: generic-behave
 Version: 0.0.0.dev1
 Summary: UNKNOWN
@@ -8,12 +8,3 @@ Author-email: UNKNOWN
 License: UNKNOWN
 Description: UNKNOWN
 Platform: UNKNOWN
-Provides: generic_behave
-Provides: generic_behave.ns_requests
-Provides: generic_behave.ns_behave
-Provides: generic_behave.ns_selenium
-Provides: generic_behave.ns_behave.common
-Provides: generic_behave.ns_behave.step_library
-Provides: generic_behave.ns_behave.step_library.generic_behave_steps
-Provides: generic_behave.ns_selenium.utils
-Provides: generic_behave.ns_selenium.selenium_functions

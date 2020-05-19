@@ -9,7 +9,7 @@ python_library(
         "3rdparty/python:coloredlogs",
         "3rdparty/python:jsonpath",
         "3rdparty/python:requests",
-        "generic_behave",
+        "src",
         "tests_replicated/src:lib"
     ],
 )
@@ -19,7 +19,7 @@ python_binary(
     dependencies=[":lambda-python-ns-tests-replicated-2-lib"],
 )
 python_awslambda(
-    name="lambda-python-ns-tests-replicated",
+    name="lambda-python-ns-tests-replicated-2",
     binary=":lambda-python-ns-tests-replicated-2-bin",
     handler="lambda_handler.lambda_handler:lambda_handler",
 )

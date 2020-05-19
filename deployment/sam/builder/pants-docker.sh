@@ -8,18 +8,19 @@ BUILD_ARGS=(
   -e AWS_ACCESS_KEY_ID
   -e AWS_SECRET_ACCESS_KEY
   -e NPM_AUTH_TOKEN
-  -v "${TALOS_ROOT}/.git:/var/task/.git"
-  -v "${TALOS_ROOT}/3rdparty:/var/task/3rdparty"
-  -v "${TALOS_ROOT}/apps:/var/task/apps"
-  -v "${TALOS_ROOT}/db:/var/task/db"
-  -v "${TALOS_ROOT}/deployment:/var/task/deployment"
-  -v "${TALOS_ROOT}/dist:/var/task/dist"
-  -v "${TALOS_ROOT}/lib:/var/task/lib"
-  -v "${TALOS_ROOT}/pants.ini:/var/task/pants.ini"
-  -v "${TALOS_ROOT}/pants:/var/task/pants"
-  -v "${TALOS_ROOT}/servers:/var/task/servers"
-  -v "${TALOS_ROOT}/stepfunctions:/var/task/stepfunctions"
-  -v "${TALOS_ROOT}/tests-e2e:/var/task/tests-e2e"
+  -v "${GENERIC_BEHAVE_ROOT}/.git:/var/task/.git"
+  -v "${GENERIC_BEHAVE_ROOT}/3rdparty:/var/task/3rdparty"
+  -v "${GENERIC_BEHAVE_ROOT}/apps:/var/task/apps"
+  -v "${GENERIC_BEHAVE_ROOT}/db:/var/task/db"
+  -v "${GENERIC_BEHAVE_ROOT}/deployment:/var/task/deployment"
+  -v "${GENERIC_BEHAVE_ROOT}/dist:/var/task/dist"
+  -v "${GENERIC_BEHAVE_ROOT}/lib:/var/task/lib"
+  -v "${GENERIC_BEHAVE_ROOT}/pants.ini:/var/task/pants.ini"
+  -v "${GENERIC_BEHAVE_ROOT}/pants:/var/task/pants"
+  -v "${GENERIC_BEHAVE_ROOT}/servers:/var/task/servers"
+  -v "${GENERIC_BEHAVE_ROOT}/stepfunctions:/var/task/stepfunctions"
+  -v "${GENERIC_BEHAVE_ROOT}/generic_behave:/var/task/generic_behave"
+  -v "${GENERIC_BEHAVE_ROOT}/tests_replicated:/var/task/tests_replicated"
   "$PANTS_BUILDER_IMAGE"
 )
 

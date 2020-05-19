@@ -6,7 +6,9 @@ def lambda_handler(event, context):
         exit_code = behave_main(
             "--tags=tests-replicated "
             "-D environment='https://replicated-test.n-s.internal/' "
-            "tests_replicated/src/ns_tests_replicated"
+            f"-D viz_version={event['version']} "
+            "--logging-level=DEBUG "
+            "ns_tests_replicated"
         )
         return {
             "status_code": 200,

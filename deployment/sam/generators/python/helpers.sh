@@ -1,8 +1,8 @@
 #!/bin/bash
 # Helper functions for working with SAM projects created by the "python" generator
 
-if [[ -z "$TALOS_ROOT" ]]; then
-  echo "Missing required environment variable: TALOS_ROOT"
+if [[ -z "$GENERIC_BEHAVE_ROOT" ]]; then
+  echo "Missing required environment variable: GENERIC_BEHAVE_ROOT"
   exit 1
 fi
 
@@ -11,7 +11,7 @@ if [[ ! $(which jq) ]]; then
   exit 1
 fi
 
-source "$TALOS_ROOT/deployment/sam/builder/pants-docker.sh"
+source "$GENERIC_BEHAVE_ROOT/deployment/sam/builder/pants-docker.sh"
 
 ACCOUNT_ID=$(aws sts get-caller-identity  | jq '.Account' | sed "s/\"//g")
 
@@ -29,7 +29,7 @@ function sam-python-build() {
     local sam_project="$(echo "$1" | jq -r .project_name -)"
 
     echo "Cleaning out existing PEX files"
-    rm -f $(find "${TALOS_ROOT}/dist" -name "lambda-python-${sam_project}*")
+    rm -f $(find "${GENERIC_BEHAVE_ROOT}/dist" -name "lambda-python-${sam_project}*")
 
     echo "Creating Lambda bundle"
     pants-run bundle \
@@ -40,7 +40,7 @@ function sam-python-build() {
       "deployment/sam/projects/${sam_project}:lambda-python-${sam_project}"
 
     echo "Setting file permissions in Lambda bundle"
-    local dist="${TALOS_ROOT}/dist/lambda-python-${sam_project}.pex"
+    local dist="${GENERIC_BEHAVE_ROOT}/dist/lambda-python-${sam_project}.pex"
     local tmpdir="$(mktemp -d)"
     pushd "$tmpdir" > /dev/null
     unzip -qo "$dist"
@@ -58,15 +58,15 @@ function sam-python-publish() {
 
     local sam_project="$(echo "$1" | jq -r .project_name -)"
     local is_nested_stack="$(echo "$1" | jq -r .is_nested_stack -)"
-    local lambda_function_pex_file="${TALOS_ROOT}/dist/lambda-python-${sam_project}.pex"
+    local lambda_function_pex_file="${GENERIC_BEHAVE_ROOT}/dist/lambda-python-${sam_project}.pex"
     local checksum="$(sha256sum < "$lambda_function_pex_file" | cut -d' ' -f1)"
     local code_uri="s3://${S3_BUCKET}/${checksum}"
     local cf_template_name="lambda-python-${sam_project}.yml"
     local cf_template_path
     if [[ "$is_nested_stack" == "yes" ]]; then
-      cf_template_path="${TALOS_ROOT}/deployment/cf_templates/nested-stacks/${cf_template_name}"
+      cf_template_path="${GENERIC_BEHAVE_ROOT}/deployment/cf_templates/nested-stacks/${cf_template_name}"
     else
-      cf_template_path="${TALOS_ROOT}/deployment/cf_templates/${cf_template_name}"
+      cf_template_path="${GENERIC_BEHAVE_ROOT}/deployment/cf_templates/${cf_template_name}"
     fi
 
     echo "Uploading Lambda bundle to S3"
