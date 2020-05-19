@@ -1,8 +1,0 @@
-README.md
-setup.cfg
-setup.py
-generic_behave.egg-info/PKG-INFO
-generic_behave.egg-info/SOURCES.txt
-generic_behave.egg-info/dependency_links.txt
-generic_behave.egg-info/requires.txt
-generic_behave.egg-info/top_level.txt
