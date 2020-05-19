@@ -23,7 +23,7 @@ Parameters:
 Globals:
   # See: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
   Function:
-    CodeUri: s3://serverless-231405699240/0aea9f93f686102525ee999744fdb58e221be44cda2c3279c4304e045e9d8c98  # DO NOT CHANGE; this is templated by `./build.sh`
+    CodeUri: s3://serverless-231405699240/257190747b9ff525414ef14ee81080f5ff51b5c159f3e95423120cf10e788192  # DO NOT CHANGE; this is templated by `./build.sh`
     Handler: lambdex_handler.handler
     Runtime: python3.6
     Tags:

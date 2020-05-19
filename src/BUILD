@@ -9,5 +9,5 @@ python_library(
         "3rdparty/python:selenium",
     ],
     sources=["**/*"],
-    tags={".", "code", "python"},
+    tags={"code", "lib", "python"},
 )

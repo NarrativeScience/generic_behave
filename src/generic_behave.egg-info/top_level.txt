@@ -1,3 +1,0 @@
-ns_behave
-ns_requests
-ns_selenium

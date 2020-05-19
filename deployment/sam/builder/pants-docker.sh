@@ -19,7 +19,7 @@ BUILD_ARGS=(
   -v "${GENERIC_BEHAVE_ROOT}/pants:/var/task/pants"
   -v "${GENERIC_BEHAVE_ROOT}/servers:/var/task/servers"
   -v "${GENERIC_BEHAVE_ROOT}/stepfunctions:/var/task/stepfunctions"
-  -v "${GENERIC_BEHAVE_ROOT}/generic_behave:/var/task/generic_behave"
+  -v "${GENERIC_BEHAVE_ROOT}/src:/var/task/src"
   -v "${GENERIC_BEHAVE_ROOT}/tests_replicated:/var/task/tests_replicated"
   "$PANTS_BUILDER_IMAGE"
 )
