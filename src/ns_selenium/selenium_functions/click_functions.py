@@ -100,6 +100,30 @@ class ClickFunctions:
         LOGGER.debug(f"Successfully double clicked on {element_name}.")
 
     @staticmethod
+    def drag_and_drop(
+            element_to_drag: WebElement, x_offset: int, y_offset: int
+    ) -> None:
+        """
+        Drag and drop an element
+
+        Args:
+            element_to_drag: the element to be dragged
+            x_offset: X offset to move to.
+            y_offset: Y offset to move to.
+
+        """
+        LOGGER.debug(
+            f'Attempting to drag and drop element to offset: {x_offset}, {y_offset}.'
+        )
+        ActionChains.drag_and_drop_by_offset(
+            element_to_drag,
+            x_offset, y_offset
+        )
+        LOGGER.debug(
+            f'Successfully dragged and dropped element to offset: {x_offset}, {y_offset}.'
+        )
+
+    @staticmethod
     def click_element_in_dropdown_menu(
         ctx: Context, locators: dict, button_name: str, element_name: str
     ) -> None:
