@@ -115,10 +115,7 @@ class ClickFunctions:
         LOGGER.debug(
             f'Attempting to drag and drop element to offset: {x_offset}, {y_offset}.'
         )
-        ActionChains.drag_and_drop_by_offset(
-            element_to_drag,
-            x_offset, y_offset
-        )
+        ActionChains.drag_and_drop_by_offset(element_to_drag, x_offset, y_offset)
         LOGGER.debug(
             f'Successfully dragged and dropped element to offset: {x_offset}, {y_offset}.'
         )
