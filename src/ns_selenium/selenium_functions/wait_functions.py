@@ -174,6 +174,39 @@ class WaitFunctions:
             )
 
     @staticmethod
+    def wait_until_new_window_is_open(
+            ctx: Context,
+            timeout: Union[int, None] = None,
+    ) -> bool:
+        """Wait until a new window has opened.
+
+        Args:
+            ctx: The behave context object.
+            timeout: seconds to wait for the element to appear or None.
+                Default is set in the environment.py file.
+
+        Raises:
+            TimeoutException: if the element was not present after the timeout
+                was reached
+
+        Returns:
+            True if element is present
+        """
+        timeout = timeout or ctx.wait_timeout
+        try:
+            LOGGER.debug("Waiting for a new window to open")
+            WebDriverWait(ctx.driver, timeout).until(
+                EC.new_window_is_opened(ctx.driver.window_handles)
+            )
+            LOGGER.debug("New window has successfully opened.")
+            return True
+        except TimeoutException:
+            raise TimeoutException(
+                "The new window was not present when it"
+                " was expected to be."
+            )
+
+    @staticmethod
     def wait_for_visibility_of_element(
         ctx: Context,
         locators: dict,
