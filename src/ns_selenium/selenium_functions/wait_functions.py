@@ -176,12 +176,14 @@ class WaitFunctions:
     @staticmethod
     def wait_until_new_window_is_open(
             ctx: Context,
+            expected_window_count: int,
             timeout: Union[int, None] = None,
     ) -> bool:
-        """Wait until a new window has opened.
+        """Wait until the expected amount of windows are open.
 
         Args:
             ctx: The behave context object.
+            expected_window_count: The amount of windows expected to be open.
             timeout: seconds to wait for the element to appear or None.
                 Default is set in the environment.py file.
 
@@ -194,16 +196,16 @@ class WaitFunctions:
         """
         timeout = timeout or ctx.wait_timeout
         try:
-            LOGGER.debug("Waiting for a new window to open")
+            LOGGER.debug(f"Waiting for {expected_window_count} windows to be open")
             WebDriverWait(ctx.driver, timeout).until(
-                EC.new_window_is_opened(ctx.driver.window_handles)
+                EC.number_of_windows_to_be(expected_window_count)
             )
-            LOGGER.debug("New window has successfully opened.")
+            LOGGER.debug(f"Successfully detected {expected_window_count} windows are open.")
             return True
         except TimeoutException:
             raise TimeoutException(
-                "The new window was not present when it"
-                " was expected to be."
+                f"Only {len(ctx.driver.window_handles)} window(s) were found open."
+                f" Expected to be {expected_window_count} windows."
             )
 
     @staticmethod
