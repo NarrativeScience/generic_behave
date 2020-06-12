@@ -174,12 +174,12 @@ class WaitFunctions:
             )
 
     @staticmethod
-    def wait_until_new_window_is_open(
+    def wait_for_expected_number_of_open_windows(
             ctx: Context,
             expected_window_count: int,
             timeout: Union[int, None] = None,
     ) -> bool:
-        """Wait until the expected amount of windows are open.
+        """Wait until the expected number of windows are open.
 
         Args:
             ctx: The behave context object.
