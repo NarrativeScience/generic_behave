@@ -15,15 +15,18 @@ class ClickFunctions:
     """
 
     @staticmethod
-    def click_at(ctx: Context, locators: dict, element_name: str) -> None:
+    def click_at_element_by_name(ctx: Context, locators: dict, element_name: str) -> None:
         """
-        Moved the mouse to a location of an element and then clicks at that location
+        Moves the mouse to the location of an element by name, and then clicks at
+        that location.  This is for use in the case of transparent overlays that
+        block the standard click element functions.  This should always be followed
+        by a validation that the click did what was intended as this is a blind click.
 
         Args:
-            ctx: The behave context object
-            locators: dict of locators
-            element_name: key corresponding to the element's locator in the
-            page object's locators dictionary
+            ctx: The behave context object.
+            locators: Dict of locators.
+            element_name: Key corresponding to the element's locator in the
+            page object's locators dictionary.
 
         Returns:
             None
@@ -36,6 +39,29 @@ class ClickFunctions:
         ).click().perform()
         LOGGER.debug(
             f"Successfully moved mouse to element: {element_name} and clicked it."
+        )
+
+    @staticmethod
+    def click_at_element(ctx: Context, element: WebElement) -> None:
+        """
+        Moves the mouse to the location of an element, and then clicks at
+        that location.  This is for use in the case of transparent overlays that
+        block the standard click element functions.  This should always be followed
+        by a validation that the click did what was intended as this is a blind click.
+
+        Args:
+            ctx: The behave context object.
+            element: The element to click.
+
+        Returns:
+            None
+        """
+        LOGGER.debug(
+            f"Attempting to move mouse to element and click it."
+        )
+        ActionChains(ctx.driver).move_to_element(element).click().perform()
+        LOGGER.debug(
+            f"Successfully moved mouse to element and clicked it."
         )
 
     @staticmethod
