@@ -10,17 +10,23 @@ def lambda_handler(event, context):
             "--logging-level=DEBUG "
             "ns_tests_replicated"
         )
-        return {
-            "status_code": 200,
-            "exit_code": exit_code,
-            "body": "SUCCESS"
-        }
+        if exit_code == 0:
+            return {
+                "status_code": 200,
+                "exit_code": exit_code,
+                "body": "test ran with SUCCESS"
+            }
+        else:
+            return{
+                "status_code": 200,
+                "exit_code": exit_code,
+                "body": "test ran but FAILED"
+            }
     except:
         return {
             "status_code": 400,
             "body": "FAILURE"
         }
-
 
 
 if __name__ == "__main__":
