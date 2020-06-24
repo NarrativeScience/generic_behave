@@ -1,13 +1,11 @@
 @tests-replicated
 Feature: Tests for Replicated deployment
 
-  @setup
-  Scenario: Validate the correct version is installed.  Will poll the test
-    server for a determined amount of time in 30 second increments to wait
-    for automated version update.
+  @version-check
+  Scenario: Validate the correct version is installed
     Given a version request is sent to the replicated test stack
     Then a 200 response is returned
-    And the replicated test server is polled 5 times to detect the version change
+    And the viz-server version is validated
 
   Scenario: Basic health check (story write)
     Given the test data is retrieved from S3

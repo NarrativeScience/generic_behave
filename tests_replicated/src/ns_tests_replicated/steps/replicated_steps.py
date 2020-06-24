@@ -5,9 +5,6 @@ import logging
 import requests
 import boto3
 import json
-import time
-from jsonpath import jsonpath
-from ns_behave.common.common_behave_functions import CommonBehave
 
 from behave import given, then, when, use_step_matcher
 from behave.runner import Context
@@ -30,18 +27,8 @@ def request_version(ctx: Context) -> None:
     LOGGER.debug(f"Successfully sent a version request to the replicated test stack with response: {response}")
 
 
-@then('the replicated test server is polled (?P<wait_time>\d+) times to detect the version change')
-def validate_version(ctx: Context, wait_time: int):
-    LOGGER.debug(f'Polling the replicated test server for {wait_time} minutes to verify version change to {ctx.viz_version}.')
-    wait_time = int(wait_time)
-    while wait_time > 0:
-        if str(jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))[0]) == ctx.viz_version:
-            LOGGER.debug(f'Quill version {ctx.viz_version} detected.  Continuing test suite.')
-            break
-        else:
-            LOGGER.debug(f'Version {jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))} detected.  Polling again in 30 seconds.')
-            time.sleep(30)
-        wait_time -= 1
+@then('the viz-server version is validated')
+def validate_version(ctx: Context) -> None:
     generic_assert_steps.step_assert_rest_response_value(ctx, "version", None, ctx.viz_version)
 
 
