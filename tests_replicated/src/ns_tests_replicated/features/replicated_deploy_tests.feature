@@ -3,11 +3,11 @@ Feature: Tests for Replicated deployment
 
   @setup
   Scenario: Validate the correct version is installed.  Will poll the test
-    server for a determined amount of time in 60 second increments to wait
+    server for a determined amount of time in 30 second increments to wait
     for automated version update.
     Given a version request is sent to the replicated test stack
     Then a 200 response is returned
-    And the replicated test server is polled for 5 minutes to detect the version change
+    And the replicated test server is polled 5 times to detect the version change
 
   Scenario: Basic health check (story write)
     Given the test data is retrieved from S3

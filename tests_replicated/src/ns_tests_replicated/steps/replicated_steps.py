@@ -30,7 +30,7 @@ def request_version(ctx: Context) -> None:
     LOGGER.debug(f"Successfully sent a version request to the replicated test stack with response: {response}")
 
 
-@then('the replicated test server is polled for (?P<wait_time>\d+) minutes to detect the version change')
+@then('the replicated test server is polled (?P<wait_time>\d+) times to detect the version change')
 def validate_version(ctx: Context, wait_time: int):
     LOGGER.debug(f'Polling the replicated test server for {wait_time} minutes to verify version change to {ctx.viz_version}.')
     wait_time = int(wait_time)
@@ -40,7 +40,7 @@ def validate_version(ctx: Context, wait_time: int):
             break
         else:
             LOGGER.debug(f'Version {jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))} detected.  Polling again in 1 minute.')
-            time.sleep(60)
+            time.sleep(30)
         wait_time -= 1
     generic_assert_steps.step_assert_rest_response_value(ctx, "version", None, ctx.viz_version)
 
