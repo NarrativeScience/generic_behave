@@ -39,7 +39,7 @@ def validate_version(ctx: Context, wait_time: int):
             LOGGER.debug(f'Quill version {ctx.viz_version} detected.  Continuing test suite.')
             break
         else:
-            LOGGER.debug(f'Version {jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))} detected.  Polling again in 1 minute.')
+            LOGGER.debug(f'Version {jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))} detected.  Polling again in 30 seconds.')
             time.sleep(30)
         wait_time -= 1
     generic_assert_steps.step_assert_rest_response_value(ctx, "version", None, ctx.viz_version)
