@@ -5,6 +5,9 @@ import logging
 import requests
 import boto3
 import json
+import time
+from jsonpath import jsonpath
+from ns_behave.common.common_behave_functions import CommonBehave
 
 from behave import given, then, when, use_step_matcher
 from behave.runner import Context
@@ -18,7 +21,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @given("a version request is sent to the replicated test stack")
-def request_version(ctx: Context):
+def request_version(ctx: Context) -> None:
     LOGGER.debug('Attempting to send a version request to the replicated test stack')
     ctx.response = requests.Session().request(
         method="get", url=ctx.gateway_base_url, verify=False
@@ -27,13 +30,23 @@ def request_version(ctx: Context):
     LOGGER.debug(f"Successfully sent a version request to the replicated test stack with response: {response}")
 
 
-@then('the viz-server version is validated')
-def validate_version(ctx: Context):
+@then('the replicated test server is polled for (?P<wait_time>\d+) minutes to detect the version change')
+def validate_version(ctx: Context, wait_time: int):
+    LOGGER.debug(f'Polling the replicated test server for {wait_time} minutes to verify version change to {ctx.viz_version}.')
+    wait_time = int(wait_time)
+    while wait_time > 0:
+        if str(jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))[0]) == ctx.viz_version:
+            LOGGER.debug(f'Quill version {ctx.viz_version} detected.  Continuing test suite.')
+            break
+        else:
+            LOGGER.debug(f'Version {jsonpath(ctx.response.json(), CommonBehave.interpolate_context_attributes(ctx, "version"))} detected.  Polling again in 1 minute.')
+            time.sleep(60)
+        wait_time -= 1
     generic_assert_steps.step_assert_rest_response_value(ctx, "version", None, ctx.viz_version)
 
 
 @given('the test data is retrieved from S3')
-def retrieve_s3_payload(ctx: Context):
+def retrieve_s3_payload(ctx: Context) -> None:
     s3 = boto3.client('s3')
     payload = s3.get_object(Bucket='s3-ns-viz', Key='datasets/regression-datasets/Scatterplot/v2_scatterplot_2M.json')
     ctx.request_data = json.loads(payload["Body"].read().decode())
@@ -41,7 +54,7 @@ def retrieve_s3_payload(ctx: Context):
 
 
 @when('a story request is sent to (?P<url>.*)')
-def request_story(ctx: Context, url: str):
+def request_story(ctx: Context, url: str) -> None:
     LOGGER.debug(f'Attempting to send a story request to {url}')
     ctx.response = requests.Session().request(
         method="post", url=ctx.gateway_base_url + url, verify=False, json=ctx.request_data
@@ -51,7 +64,7 @@ def request_story(ctx: Context, url: str):
 
 
 @given('the viz extension (?P<extension>.*) is polled')
-def poll_extension(ctx: Context, extension: str):
+def poll_extension(ctx: Context, extension: str) -> None:
     LOGGER.debug(f'Attempting poll viz extension: {extension}')
     ctx.response = requests.Session().request(
         method="get", url='{}v1/extensions/{}/static/main.js'.format(ctx.gateway_base_url, extension), verify=False
