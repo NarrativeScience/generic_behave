@@ -1,4 +1,3 @@
-@tests-replicated
 Feature: Tests for Replicated deployment
 
   @version-check
@@ -7,12 +6,14 @@ Feature: Tests for Replicated deployment
     Then a 200 response is returned
     And the viz-server version is validated
 
+  @tests-replicated
   Scenario: Basic health check (story write)
     Given the test data is retrieved from S3
     When a story request is sent to v2/stories/scatterplot
     Then a 200 response is returned
     And the response content header should be HTML
 
+  @tests-replicated
   Scenario Outline: Validate viz extensions are reachable
     Given the viz extension <extension> is polled
     Then a 200 response is returned
