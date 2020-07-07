@@ -17,7 +17,7 @@ class ClickFunctions:
     @staticmethod
     def click_at_element_by_name(ctx: Context, locators: dict, element_name: str) -> None:
         """
-        Moves the mouse to the location of an element by name, and then clicks at
+        Moves the mouse to the location of an element by name, and then double clicks at
         that location.  This is for use in the case of transparent overlays that
         block the standard click element functions.  This should always be followed
         by a validation that the click did what was intended as this is a blind click.
@@ -36,7 +36,7 @@ class ClickFunctions:
         )
         ActionChains(ctx.driver).move_to_element(
             GeneralFunctions.get_element_by_name(ctx, locators, element_name)
-        ).click().perform()
+        ).double_click().perform()
         LOGGER.debug(
             f"Successfully moved mouse to element: {element_name} and clicked it."
         )
